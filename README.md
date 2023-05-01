@@ -12,7 +12,7 @@ This is a Python script that sends a DHCP Discover packet and listens for DHCP O
 
 ## How to Use the Script
 1. Install the Scapy library by running `pip install scapy`.
-2. Run the script using `python dhcp_discover.py`.
+2. Run the script using `python dhcpHunter.py`.
 3. The script will send a DHCP Discover packet and listen for DHCP Offer packets for 5 seconds.
 4. Once the timeout has been reached, the script will display the IP addresses of the DHCP servers that responded and their hostnames (if available).
 
