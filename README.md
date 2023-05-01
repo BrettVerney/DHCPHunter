@@ -16,4 +16,11 @@ This is a Python script that sends a DHCP Discover packet and listens for DHCP O
 3. The script will send a DHCP Discover packet and listen for DHCP Offer packets for 5 seconds.
 4. Once the timeout has been reached, the script will display the IP addresses of the DHCP servers that responded and their hostnames (if available).
 
+## Example
+
+The script should output something similar to the image below:
+
+![dhcpHunter Example](https://github.com/BrettVerney/DHCPHunter/blob/main/example_output.PNG)
+
 Note: This script requires root privileges to run, as it involves packet sniffing and sending.
+
