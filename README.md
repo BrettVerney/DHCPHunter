@@ -3,7 +3,7 @@
 This is a Python script that sends a DHCP Discover packet and listens for DHCP Offer packets on the network interface card that has the default route. It uses the Scapy library for packet crafting and sniffing, the Socket library for hostname resolution, and the Time library to determine the DHCP server latency.
 
 **Author:** Brett Verney</br>
-**Version:** v0.1 | 1-05-2023
+**Version:** v0.2 | 18-04-2024
 
 ## Use Cases
 - This script can be used to detect DHCP servers on a network and their assigned IP addresses.

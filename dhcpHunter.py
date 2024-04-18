@@ -1,6 +1,7 @@
 from scapy.all import *
 import socket
 import time
+import random
 
 def build_dhcp_discover():
     """Builds and returns a DHCP discover packet."""
@@ -18,26 +19,28 @@ def send_dhcp_discover(dhcp_discover):
     return start_time
 
 def parse_dhcp_offer(pkt, start_time):
-    """If the packet is a DHCP offer, return the server's IP and response latency."""
+    """If the packet is a DHCP offer, return the server's IP, response latency, and relay status."""
     if pkt.haslayer(DHCP) and pkt[DHCP].options[0][1] == 2:
         latency = time.perf_counter() - start_time
-        return (pkt[IP].src, latency)
+        is_relay = pkt[BOOTP].giaddr != "0.0.0.0" or any(opt[0] == 'relay_agent_information' for opt in pkt[DHCP].options)
+        relay_text = " (possible DHCP Relay)" if is_relay else ""
+        return (pkt[IP].src + relay_text, latency)
 
 def listen_for_offers(start_time):
-    """Listens for DHCP offers and returns a set of the responding servers' IPs and latencies."""
+    """Listens for DHCP offers and returns a set of the responding servers' IPs, latencies, and relay info."""
     offer_ips = set()
     sniff(prn=lambda pkt: offer_ips.add(parse_dhcp_offer(pkt, start_time)),
           filter="udp and (port 67 or port 68)", iface=conf.route.route("0.0.0.0")[0], timeout=5)
     return offer_ips
 
 def print_offers(offer_ips):
-    """Prints the list of DHCP servers that responded with their IPs, hostnames, and latencies."""
+    """Prints the list of DHCP servers that responded with their IPs, hostnames, latencies, and relay status."""
     print("The following DHCP servers responded:")
     for offer in offer_ips:
         if offer is not None:  # Ensure we received a response
             ip, latency = offer
             try:
-                hostname = socket.gethostbyaddr(ip)[0]
+                hostname = socket.gethostbyaddr(ip.split(' ')[0])[0]
                 print(f"{ip} ({hostname}) - latency: {latency:.6f} seconds")
             except socket.herror:
                 print(f"{ip} - latency: {latency:.6f} seconds")
